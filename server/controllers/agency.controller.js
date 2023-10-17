@@ -6,13 +6,14 @@ import jwtDecode from "jwt-decode";
 import { validateVehicle } from "../helpers/validations/vehicle.validations";
 import { addBodyVehicle } from "../models/body/vehicles.body";
 import Vehicle from "../models/db/vehicles.model";
+import Booking from "../models/db/booking.model";
 
 export const createTicket = async (req, res) => {
     try {
         const { price, from, destination, time, vehicle, arrival } = req.body;
         const token = req.headers.authorization;
         const decoded = jwtDecode(token);
-        const agency = decoded.user;
+        const agency = JSON.stringify(decoded.user);
 
         const { error } = validateTicket(createBodyTicket(req));
 
@@ -33,7 +34,7 @@ export const createTicket = async (req, res) => {
         const created = await Ticket.create({
             _id: new Mongoose.Types.ObjectId(),
             agency,
-            agencyId: agency._id,
+            agencyId: decoded.user._id,
             price,
             from,
             destination,
@@ -112,11 +113,12 @@ export const getOurTickets = async (req, res) => {
         const decoded = jwtDecode(token);
         const agency = decoded.user;
 
-        const tickets = Ticket.find({ agencyId: agency._id });
+        const tickets = await Ticket.find({ agencyId: agency._id });
         return res.status(200).json({
             tickets,
         });
     } catch (error) {
+        console.log(error);
         res.status(500).json({
             message: "Something went wrong",
             error
@@ -139,6 +141,19 @@ export const getOurVehicles = async (req, res) => {
             message: "Something went wrong",
             error
         });
+    }
+}
+
+export const getBooking = async (req, res) => {
+    try {
+        const bookings = await Booking.find();
+        return res.status(200).json({
+            bookings,
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "Something went wrong",
+        })
     }
 }
 

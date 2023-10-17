@@ -19,7 +19,7 @@ export const getTickets = async (req, res) => {
 
 export const bookTicket = async (req, res) => {
     // try {
-        const { ticketId } = req.query;
+        const { ticketId, date } = req.query;
         const token = req.headers.authorization;
         const decoded = jwtDecode(token);
         const user = decoded.user;
@@ -31,6 +31,7 @@ export const bookTicket = async (req, res) => {
             ticket,
             ticketId,
             user,
+            date,
             userId: user._id,
         });
         if(!bookedTicket){

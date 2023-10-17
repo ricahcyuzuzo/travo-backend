@@ -29,7 +29,7 @@ export const createUser = async (req, res) => {
             name,
             phone,
             pin: hashedPassword,
-            type: type === '1' ? 'traveller' : type === '2' ? 'angency' : 'driver',
+            type: type === '1' ? 'traveller' : type === '2' ? 'agency' : 'driver',
         });
 
         return res.status(201).json({
